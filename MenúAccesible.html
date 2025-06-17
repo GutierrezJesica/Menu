@@ -1,11 +1,98 @@
 <html>
-<nav class="navegacion">
-    <ul class="navegacion_lista">
-        <li class="navegacion_item">
-            <a href="#item-1" class="navegacion_link">Inicio</a>
-        </li>
-    </ul>
+<nav aria-label="Main">
+    <ul>
+        <li><a href="...">Home</a></li>
+        <li><a href="...">Shop</a></li>
+            <li class="has-submenu">
+                <a href="...">Space Bears</a>
+                    <button aria-label="Submenu of Space Bears" aria-expanded="false">
+                        <!-- <svg ...> -->
+                    </button>
+                <ul>
+                    <li><a href="...">Space Bear 6</a></li>
+                    <li><a href="...">Space Bear 6 Plus</a></li>
+                </ul>
+            </li>
+                <li><a href="...">Mars Cars</a></li>
+                <li><a href="...">Contact</a></li>
+                </ul>
 </nav>
+
+<script>
+
+const menuItems = document.querySelectorAll(".has-submenu"); // JUNTA TODOS LOS ELEMENTOS DEL MENÚ QUE TIENEN UN SUB-MENÚ, EN UNA VARIABLE.
+
+let expandedItem = null; // REGISTRA EL ELEMENTO QUE ESTE EXPANDIDO EN EL MOMENTO.
+
+const expandSubMenu = (item) => {
+    const subMenu = item.querySelector("ul");
+    const button = item.querySelector("button");
+    expandedItem = item;
+
+    subMenu.setAttribute("aria-hidden","false");
+    button.setAttribute("aria-expanded","true");
+    item.dataset.expanded = "true";
+    subMenu.querySelectorAll("a")[0].focus(); // FOCUS EN EL PRIMER LINK DEL SUB-MENÚ
+};
+
+const collapseSubMenu = (item) => {
+    const subMenu = item.querySelector("ul");
+    const button = item.querySelector("button");
+    expandedItem = null;
+
+    subMenu.setAttribute("aria-hidden","true");
+    button.setAttribute("aria-expanded","false");
+    item.dataset.expanded = "false";
+    button.focus(); // FOCUS DE NUEVO EN EL BOTÓN
+};
+
+menuItems.forEach((item) => {
+    const button = item.querySelector("button");
+
+    button.addEventListener("click", (event) => {
+        if (button.ariaExpanded === "false") {
+            expandSubMenu(item);
+        } else {
+            collapseSubMenu(item);
+        }
+    });
+
+    item.addEventListener("mouseenter", () => {
+        expandSubMenu(item);
+    });
+
+    item.addEventListener("mouseleave", () => {
+        collapseSubMenu(item);
+    });
+
+    // MANEJO DE LA NAVEGACIÓN CON TECLADO
+    button.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") { // TECLA ESPACIO O ENTER
+            event.preventDefault(); // EVITAR LA ACCIÓN PREDETERMINADA DE DETENER EL DESPLAZAMIENTO AL PRESIONAR ESPACIO
+            if (button.ariaExpanded === "false") {
+                expandSubMenu(item);
+            } else {
+                collapseSubMenu(item);
+            }
+        }
+    });
+
+    // MANEJO DE LA TECLA TAB DENTRO DEL SUB-MENÚ PÁRA VOLVER AL BOTÓN.
+    const subMenuLinks = item.querySelectorAll("ul a");
+    if (subMenuLinks.length) {
+        const lastLink = subMenuLinks[subMenuLinks.length - 1];
+        lastLink.addEventListener("keydown", (event) => {
+            if (event.key === "Tab" && !event.shiftKey) {
+                event.preventDefault();
+                button.focus(); // FOCUS DE NUEVO EN EL BOTÓN
+            }
+        });
+    }
+});
+</script>
+
+
+</html>
 
 
 <!-- https://www.a11y-collective.com/blog/mastering-web-accessibility-making-drop-down-menus-user-friendly/ -->
