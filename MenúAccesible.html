@@ -1,98 +1,130 @@
-<html>
-<nav aria-label="Main">
-    <ul>
-        <li><a href="...">Home</a></li>
-        <li><a href="...">Shop</a></li>
-            <li class="has-submenu">
-                <a href="...">Space Bears</a>
-                    <button aria-label="Submenu of Space Bears" aria-expanded="false">
-                        <!-- <svg ...> -->
-                    </button>
-                <ul>
-                    <li><a href="...">Space Bear 6</a></li>
-                    <li><a href="...">Space Bear 6 Plus</a></li>
-                </ul>
-            </li>
-                <li><a href="...">Mars Cars</a></li>
-                <li><a href="...">Contact</a></li>
-                </ul>
-</nav>
+<style>
+/* Menú FN (adaptado para Divi) */
+.fn-nav {
+  width: clamp(300px,100%, 1080px);
+  margin: 0 auto;
+  padding: 0.5rem 0;
+  position: relative;
+  font-family: Open-Sans, sans-serif;
+  font-size: 1rem;
+}
+
+.fn-nav-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fn-nav-links a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #3C1939;
+  padding: 0.75rem 0.5rem;
+  transition: background 0.3s;
+  margin-bottom: -8px;
+}
+
+.fn-nav-links a:hover {
+  color: #A680F5;
+}
+
+.fn-nav-links a.active {
+  background-color: #452D77;
+  color: #fff;
+  border-radius: 8px 8px 0px 0px;
+}
+
+.fn-hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.fn-hamburger span {
+  height: 3px;
+  width: 25px;
+  background: #fafafa;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+@media (max-width: 980px) {
+  .fn-nav {
+    width: 100%;
+    padding: 1rem 1rem;
+    position: center;
+  }
+
+  .fn-nav-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 50%;
+    background: #fafafa;
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    padding-bottom: 0.5rem;
+    gap: 0.5rem;
+    z-index: 100;
+  }
+
+  .fn-nav-links a {
+    width: 100%;
+    padding: 1rem;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .fn-nav-links a.active {
+    border-radius: 0px;
+}
+  
+  .fn-nav-links.show {
+    display: flex;
+  }
+
+  .fn-hamburger {
+    display: flex;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+  }
+}
+</style>
+
+<div class="fn-nav">
+  <div class="fn-hamburger" onclick="document.getElementById('fnNavLinks').classList.toggle('show')">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="fn-nav-links" id="fnNavLinks">
+    <a href="https://3clics.com.ar/app-prueba/reserva/" >Inicio</a>
+    <a href="https://3clics.com.ar/app-prueba/inicio/">Sobre mí</a>
+    <a href="https://3clics.com.ar/app-prueba/gym-modelo-2/">Numerología</a>
+    <a href="https://3clics.com.ar/app-prueba/hair-salon/">Meditación</a>
+    <a href="https://3clics.com.ar/app-prueba/arquitectos-1/">Constelaciones</a>
+    <a href="https://3clics.com.ar/app-prueba/2432-2/">Retiros</a>
+    <a href="https://3clics.com.ar/app-prueba/gym-landing/">Lecturas</a>
+  </div>
+</div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentUrl = window.location.pathname;
+    const links = document.querySelectorAll(".fn-nav-links a");
 
-const menuItems = document.querySelectorAll(".has-submenu"); // JUNTA TODOS LOS ELEMENTOS DEL MENÚ QUE TIENEN UN SUB-MENÚ, EN UNA VARIABLE.
-
-let expandedItem = null; // REGISTRA EL ELEMENTO QUE ESTE EXPANDIDO EN EL MOMENTO.
-
-const expandSubMenu = (item) => {
-    const subMenu = item.querySelector("ul");
-    const button = item.querySelector("button");
-    expandedItem = item;
-
-    subMenu.setAttribute("aria-hidden","false");
-    button.setAttribute("aria-expanded","true");
-    item.dataset.expanded = "true";
-    subMenu.querySelectorAll("a")[0].focus(); // FOCUS EN EL PRIMER LINK DEL SUB-MENÚ
-};
-
-const collapseSubMenu = (item) => {
-    const subMenu = item.querySelector("ul");
-    const button = item.querySelector("button");
-    expandedItem = null;
-
-    subMenu.setAttribute("aria-hidden","true");
-    button.setAttribute("aria-expanded","false");
-    item.dataset.expanded = "false";
-    button.focus(); // FOCUS DE NUEVO EN EL BOTÓN
-};
-
-menuItems.forEach((item) => {
-    const button = item.querySelector("button");
-
-    button.addEventListener("click", (event) => {
-        if (button.ariaExpanded === "false") {
-            expandSubMenu(item);
-        } else {
-            collapseSubMenu(item);
-        }
+    links.forEach(link => {
+      const linkUrl = new URL(link.href);
+      if (linkUrl.pathname === currentUrl || linkUrl.pathname === currentUrl + "/") {
+        link.classList.add("active");
+      }
     });
-
-    item.addEventListener("mouseenter", () => {
-        expandSubMenu(item);
-    });
-
-    item.addEventListener("mouseleave", () => {
-        collapseSubMenu(item);
-    });
-
-    // MANEJO DE LA NAVEGACIÓN CON TECLADO
-    button.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") { // TECLA ESPACIO O ENTER
-            event.preventDefault(); // EVITAR LA ACCIÓN PREDETERMINADA DE DETENER EL DESPLAZAMIENTO AL PRESIONAR ESPACIO
-            if (button.ariaExpanded === "false") {
-                expandSubMenu(item);
-            } else {
-                collapseSubMenu(item);
-            }
-        }
-    });
-
-    // MANEJO DE LA TECLA TAB DENTRO DEL SUB-MENÚ PÁRA VOLVER AL BOTÓN.
-    const subMenuLinks = item.querySelectorAll("ul a");
-    if (subMenuLinks.length) {
-        const lastLink = subMenuLinks[subMenuLinks.length - 1];
-        lastLink.addEventListener("keydown", (event) => {
-            if (event.key === "Tab" && !event.shiftKey) {
-                event.preventDefault();
-                button.focus(); // FOCUS DE NUEVO EN EL BOTÓN
-            }
-        });
-    }
-});
+  });
 </script>
 
-
-</html>
-
-
-<!-- https://www.a11y-collective.com/blog/mastering-web-accessibility-making-drop-down-menus-user-friendly/ -->
