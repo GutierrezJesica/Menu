@@ -1,5 +1,10 @@
 <style>
 /* Menú FN (adaptado para Divi) */
+body {
+    margin: 0;
+    width: 100%;
+}
+
 .fn-nav {
   width: clamp(300px,100%, 1080px);
   margin: 0 auto;
@@ -55,13 +60,14 @@
 @media (max-width: 980px) {
   .fn-nav {
     width: 100%;
-    padding: 1rem 1rem;
-    position: center;
+    padding: 3rem 1rem;
+    background-color: #452D77;
+
   }
 
   .fn-nav-links {
     position: absolute;
-    top: 60px;
+    top: 6rem;
     right: 0;
     width: 50%;
     background: #fafafa;
@@ -75,7 +81,7 @@
 
   .fn-nav-links a {
     width: 100%;
-    padding: 1rem;
+    padding: 1.3rem 0;
     border-bottom: 1px solid #e6e6e6;
   }
 
@@ -90,21 +96,26 @@
   .fn-hamburger {
     display: flex;
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 2rem;
+    right: 2.2rem;
     z-index: 1000;
   }
 }
 </style>
 
-<div class="fn-nav">
-  <div class="fn-hamburger" onclick="document.getElementById('fnNavLinks').classList.toggle('show')">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <div class="fn-nav-links" id="fnNavLinks">
-    <a href="https://3clics.com.ar/app-prueba/reserva/" >Inicio</a>
+<nav class="fn-nav" role="navigation" aria-label="Menú principal">
+  <button class="fn-hamburger"
+          id="menuToggle"
+          aria-controls="fnNavLinks"
+          aria-expanded="false"
+          aria-label="Abrir o cerrar menú de navegación">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+
+  <div class="fn-nav-links" id="fnNavLinks" hidden>
+    <a href="https://3clics.com.ar/app-prueba/reserva/">Inicio</a>
     <a href="https://3clics.com.ar/app-prueba/inicio/">Sobre mí</a>
     <a href="https://3clics.com.ar/app-prueba/gym-modelo-2/">Numerología</a>
     <a href="https://3clics.com.ar/app-prueba/hair-salon/">Meditación</a>
@@ -112,10 +123,12 @@
     <a href="https://3clics.com.ar/app-prueba/2432-2/">Retiros</a>
     <a href="https://3clics.com.ar/app-prueba/gym-landing/">Lecturas</a>
   </div>
-</div>
+</nav>
 
 <script>
+
   document.addEventListener("DOMContentLoaded", function () {
+    // MARCAR PÁGINA ACTIVA
     const currentUrl = window.location.pathname;
     const links = document.querySelectorAll(".fn-nav-links a");
 
@@ -125,6 +138,21 @@
         link.classList.add("active");
       }
     });
+
+    // TOGGLE ACCESIBLE DEL MENÚ
+    const toggleButton = document.getElementById('menuToggle');
+    const menu = document.getElementById('fnNavLinks');
+
+    toggleButton.addEventListener('click', () => {
+      const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+      toggleButton.setAttribute('aria-expanded', String(!isExpanded));
+      if (isExpanded) {
+        menu.hidden = true;
+        menu.classList.remove('show');
+      } else {
+        menu.hidden = false;
+        menu.classList.add('show');
+      }
+    });
   });
 </script>
-
